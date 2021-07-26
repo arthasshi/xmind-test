@@ -100,14 +100,14 @@ export default {
   components: {},
   data() {
     return {
-      billData: [],
-      categoryData: [],
-      currBillData: [],
-      totalPay: 0,
-      totalIncome: 0,
-      selMonth: "",
-      addObj: {},
-      addDialogVisible: false,
+      billData: [], //原始账单数据
+      categoryData: [], //消费类型数据
+      currBillData: [], //展示在页面中的账单数据，一般情况下是billData的子集
+      totalPay: 0, //筛选时用到的 总支出
+      totalIncome: 0, //筛选时用到的 总收入
+      selMonth: "", //月份选择
+      addObj: {}, //新增数据
+      addDialogVisible: false, //新增弹窗显示活隐藏
       formLabelWidth: "120px"
     };
   },
@@ -119,6 +119,7 @@ export default {
     this.currBillData = this.billData;
   },
   methods: {
+    // csv的二维数组 转化成我们需要的对象数组
     arr2Data(arr) {
       let data = [];
       if (!(arr.constructor == Array) && arr.length > 0) {
@@ -135,6 +136,7 @@ export default {
       }
       return data;
     },
+    //月份选择
     selMonthHandler() {
       this.totalPay = 0;
       this.totalIncome = 0;
@@ -162,20 +164,25 @@ export default {
         }
       });
     },
+    //新增
     add2List() {
       this.billData.unshift(this.addObj);
       this.currBillData = this.billData;
       this.addDialogVisible = false;
     },
+    //重置
     resetSelMoth() {
       this.selMonth = "";
       this.currBillData = this.billData;
       this.totalPay = 0;
       this.totalIncome = 0;
     },
+    // 金额排序
     sortByAmount(sec, first) {
       return parseInt(sec.amount) - parseInt(first.amount);
     },
+
+    //类型转化
     cateFilter(row) {
       let nameStr = "";
       let len = this.categoryData.length;
@@ -187,9 +194,11 @@ export default {
       }
       return nameStr;
     },
+    //type转化
     typeFilter(row) {
       return row.type == "1" ? "收入" : "支出";
     },
+    //time转化
     timeFilter(row) {
       return new Date(parseInt(row.time))
         .toLocaleString()
